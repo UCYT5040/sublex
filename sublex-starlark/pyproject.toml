@@ -1,0 +1,17 @@
+[project]
+name = "sublex"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "maturin>=1.9.0",
+    "pyyaml==6.0.2",
+    "requests>=2.32.4",
+    "starlark-pyo3>=2025.1",
+]
+
+[build-system]
+requires = [
+    "maturin>=1.9.0",
+]
+build-backend = "maturin"

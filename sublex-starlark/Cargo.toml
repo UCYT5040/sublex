@@ -1,0 +1,16 @@
+[package]
+name = "sublex-starlark"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "sublex_starlark"
+path= "src/sublex_starlark/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+starlark-pyo3 = { git = "https://github.com/inducer/starlark-pyo3", rev = "259ff4a" } # Note: lib name is just `starlark`
+anyhow = "1.0"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+starlark = "0.13.0"
+pyo3 = "^0.24" # ts 
