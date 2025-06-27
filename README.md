@@ -22,3 +22,4 @@ See `sbx/poetry.sbx` for an example and `SBX.md` for an in-depth guide.
 - Discover and download SBX files through the InterPlanetary File System (IPFS).
 - More SBX examples.
 - Improved interface & documentation.
+- Async search operations (and multiple operations)
