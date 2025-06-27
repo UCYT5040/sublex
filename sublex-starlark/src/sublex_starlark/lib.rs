@@ -9,17 +9,14 @@ use starlark::starlark_module;
 
 #[starlark_module]
 fn http_module(builder: &mut GlobalsBuilder) {
-    // The signature is simple. No GlobalsBuilder. No complex lifetimes. This is it.
     fn get<'v>(url: &str, heap: &'v Heap) -> anyhow::Result<Value<'v>> {
         let resp = reqwest::blocking::get(url).map_err(|e| anyhow!(e.to_string()))?;
 
-        // CORRECTED: Get status and clone headers BEFORE moving `resp` with `.text()`
         let status = resp.status().as_u16() as u32;
         let headers = resp.headers().clone();
         let body = resp.text().map_err(|e| anyhow!(e.to_string()))?;
 
         let mut headers_map: SmallMap<&str, Value<'v>> = SmallMap::new();
-        // Iterate over the cloned headers
         for (k, v) in headers.iter() {
             headers_map.insert(k.as_str(), heap.alloc(v.to_str().unwrap_or("")));
         }
