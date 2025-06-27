@@ -73,9 +73,12 @@ class Config(ConfigGroup):
             safe_dump(self.to_dict(), file)
 
     def load(self, path: str = CONFIG_PATH):
-        with open(path, "r") as file:
-            data = safe_load(file)
-            self.from_dict(data)
+        try:
+            with open(path, "r") as file:
+                data = safe_load(file)
+                self.from_dict(data)
+        except FileNotFoundError:
+            print(f"Config file {path} not found. Using default configuration.")
 
     def to_dict(self, skip_name: bool = True) -> dict:
         return super().to_dict(skip_name=skip_name)
