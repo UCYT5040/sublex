@@ -1,0 +1,71 @@
+sublex_data = {
+    name = "Poetry",
+    description = "Search for poetry.",
+    version = "1.0.0",
+    author = "Sublex",
+    tags = {"poetry", "literature", "poem", "poems", "poet"},
+    supported_filters = {
+        query = {"search", "title"},
+        author = {"poet"}
+    },
+    permissions = {
+        network = {
+            targets = {
+                "poetrydb.org"
+            }
+        }
+    }
+}
+
+function sublex_execute(interface, filters)
+    local api_endpoint = "https://poetrydb.org"
+    local search_path = ""
+    local search_value = ""
+    -- Check if author filter is provided
+    if filters.author then
+        search_path = "/author/" .. interface.URL.encode(filters.author)
+        search_value = filters.author
+    end
+
+    if filters.query then
+        -- If author is also present, poetrydb seems to prefer title.
+        search_path = "/title/" .. interface.URL.encode(filters.query)
+        search_value = filters.query
+    end
+
+    if search_path == "" then
+        -- No filters provided, maybe return an error or default search?
+        -- For now, returning empty results.
+        return {}
+    end
+
+    local request_url = api_endpoint .. search_path
+    local response = interface.HTTP.get(request_url)
+
+    if response.status_code ~= 200 then
+        -- Handle error, maybe return a result indicating the error
+        return {}
+    end
+
+    local body = response.json
+    local results = {}
+    print("Got body parsing it")
+    if body then
+        for _, entry in ipairs(body) do
+            local result = {
+                title = entry.title,
+                -- No direct URL for the poem, so linking to a search on poetrydb
+                url = "https://poetrydb.org/title/" .. interface.URL.encode(entry.title),
+                other = {
+                    {
+                        name = "Author",
+                        value = entry.author
+                    }
+                }
+            }
+            table.insert(results, result)
+        end
+    end
+
+    return results
+end
